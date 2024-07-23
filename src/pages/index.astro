@@ -1,9 +1,12 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
+import { db, Categories } from "astro:db";
+import Layout from "../layouts/Layout.astro";
+
+const categories = await db.select().from(Categories);
 ---
 
 <Layout title="Welcome to Astro.">
+	<div id="error"></div>
 	<main>
 		<svg
 			class="astro-a"
@@ -34,32 +37,49 @@ import Card from '../components/Card.astro';
 			</defs>
 		</svg>
 		<h1>Welcome to <span class="text-gradient">Astro</span></h1>
-		<p class="instructions">
-			To get started, open the directory <code>src/pages</code> in your project.<br />
-			<strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
-		</p>
-		<ul role="list" class="link-card-grid">
-			<Card
-				href="https://docs.astro.build/"
-				title="Documentation"
-				body="Learn how Astro works and explore the official API docs."
-			/>
-			<Card
-				href="https://astro.build/integrations/"
-				title="Integrations"
-				body="Supercharge your project with new frameworks and libraries."
-			/>
-			<Card
-				href="https://astro.build/themes/"
-				title="Themes"
-				body="Explore a galaxy of community-built starter themes."
-			/>
-			<Card
-				href="https://astro.build/chat/"
-				title="Community"
-				body="Come say hi to our amazing Discord community. ❤️"
-			/>
-		</ul>
+		<div>
+			<h2>
+				Todos
+				<span>&rarr;</span>
+			</h2>
+			<form
+				id="addtask"
+				hx-post="/add-item"
+				hx-target="#todo-list"
+				hx-swap="beforeend"
+				hx-on::after-request="addtask.reset()"
+			>
+				<div>
+					<p>Select category</p>
+					{
+						categories.map(({ id, category }) => (
+							<>
+								<input
+									type="radio"
+									id={category}
+									name="category"
+									value={id}
+								/>
+								<label for={category}>{category}</label>
+								<br />
+							</>
+						))
+					}
+				</div>
+				<div>
+					<input type="text" placeholder="Add item" name="task" />
+					<button>Add item</button>
+				</div>
+			</form>
+			<ul
+				role="list"
+				class="link-card-grid"
+				id="todo-list"
+				hx-get="/list-items"
+				hx-trigger="load"
+			>
+			</ul>
+		</div>
 	</main>
 </Layout>
 
@@ -99,7 +119,10 @@ import Card from '../components/Card.astro';
 	.instructions {
 		margin-bottom: 2rem;
 		border: 1px solid rgba(var(--accent-light), 25%);
-		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
+		background: linear-gradient(
+			rgba(var(--accent-dark), 66%),
+			rgba(var(--accent-dark), 33%)
+		);
 		padding: 1.5rem;
 		border-radius: 8px;
 	}

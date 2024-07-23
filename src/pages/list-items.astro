@@ -1,0 +1,20 @@
+---
+import { db, Todos, Categories, eq } from "astro:db";
+import Card from "../components/Card.astro";
+
+const todos = await db
+    .select()
+    .from(Todos)
+    .innerJoin(Categories, eq(Todos.catId, Categories.id));
+---
+
+{
+    todos.map(({ Todos, Categories }) => (
+        <Card
+            id={Todos.id}
+            title={Categories.category}
+            body={Todos.task}
+            done={Todos.done}
+        />
+    ))
+}

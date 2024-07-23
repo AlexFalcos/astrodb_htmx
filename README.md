@@ -52,3 +52,17 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+Info by Alex:
+    Creazione di un progetto ASTRO
+    comando: npm create astro@latest
+
+    Dentro la cartella del progetto appena creato
+    Installare il modulo Node.js
+    comando: npx astro add node
+    Installazione di un Astro DB
+    comando: npx astro add db
+
+    Aggiungere lo script per Htmx (Htmx.min.js) nella cartrella "libs" dentro public 
+    Aggiornare il file 'Layout.astro' con il riferimento allo script
+    es.: <script src="/libs/htmx.min.js" is:inline></script>
